@@ -1,10 +1,12 @@
 import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from 'react'
 import type { Task, TaskActions, TaskInput, TaskUpdate } from '../../types/task'
 import { createTask, seedTasks, updateTaskInList } from '../../utils/tasks'
+import { recordComponentRender } from '../../benchmarking/renderCounts'
 
 const TaskContext = createContext<TaskActions | null>(null)
 
 export function TaskContextProvider({ children }: { children: ReactNode }) {
+  recordComponentRender('TaskContextProvider')
   const [tasks, setTasks] = useState<Task[]>(() => seedTasks.map((task) => ({ ...task })))
 
   const addTask = useCallback(async (input: TaskInput) => {

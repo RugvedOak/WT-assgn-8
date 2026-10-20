@@ -9,6 +9,9 @@ function wait(): Promise<void> {
 }
 
 export const mockTaskApi = {
+  reset(): void {
+    records = seedTasks.map((task) => ({ ...task }))
+  },
   async list(): Promise<Task[]> {
     await wait()
     return records.map((task) => ({ ...task }))

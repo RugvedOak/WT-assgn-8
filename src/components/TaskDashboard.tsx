@@ -1,6 +1,5 @@
 import { useMemo, useState, type FormEvent, type KeyboardEvent } from 'react'
 import {
-  CalendarDays,
   Check,
   Circle,
   CircleCheck,
@@ -16,6 +15,7 @@ import {
 } from 'lucide-react'
 import type { Task, TaskActions, TaskFilter, TaskInput } from '../types/task'
 import { filterTasks, getTaskStats } from '../utils/tasks'
+import { recordComponentRender } from '../benchmarking/renderCounts'
 
 type Props = TaskActions & {
   implementation: string
@@ -50,6 +50,7 @@ export function TaskDashboard({
   deleteTask,
   retry,
 }: Props) {
+  recordComponentRender('TaskDashboard')
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [validationError, setValidationError] = useState('')
@@ -59,13 +60,6 @@ export function TaskDashboard({
   const [filter, setFilter] = useState<TaskFilter>('all')
   const stats = useMemo(() => getTaskStats(tasks), [tasks])
   const visibleTasks = useMemo(() => filterTasks(tasks, filter, search), [tasks, filter, search])
-  const today = new Intl.DateTimeFormat('en', {
-    weekday: 'long',
-    month: 'long',
-    day: 'numeric',
-    year: 'numeric',
-  }).format(new Date())
-
   function handleImplementationKeyDown(event: KeyboardEvent<HTMLButtonElement>, current: 'context' | 'zustand' | 'query') {
     const currentIndex = implementations.findIndex((item) => item.value === current)
     let nextIndex = currentIndex
@@ -255,6 +249,7 @@ export function TaskDashboard({
 }
 
 function StatCard({ label, value, icon, tone }: { label: string; value: number; icon: React.ReactNode; tone: string }) {
+  recordComponentRender('StatCard')
   return (
     <article className={`stat-card stat-${tone}`}>
       <div className="stat-card-top">
@@ -275,6 +270,7 @@ function TaskRow({ task, onToggle, onDelete, onSave }: {
   onDelete: () => void
   onSave: (update: { title: string; description: string }) => Promise<void>
 }) {
+  recordComponentRender('TaskRow')
   const [editing, setEditing] = useState(false)
   const [title, setTitle] = useState(task.title)
   const [description, setDescription] = useState(task.description)
@@ -323,6 +319,7 @@ function TaskRow({ task, onToggle, onDelete, onSave }: {
 }
 
 function EmptyState({ hasTasks, hasSearch }: { hasTasks: boolean; hasSearch: boolean }) {
+  recordComponentRender('EmptyState')
   const title = hasSearch ? 'No matching tasks' : hasTasks ? 'Nothing in this view' : 'Your list is clear'
   const message = hasSearch ? 'Try another title or clear your search.' : hasTasks ? 'Try a different filter to see more tasks.' : 'Add your first task above and build a little momentum.'
   return <div className="empty-state"><div className="empty-icon"><ListTodo size={21} /></div><h3>{title}</h3><p>{message}</p></div>

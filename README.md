@@ -39,6 +39,8 @@ The Query implementation uses a predictable asynchronous in-memory mock API with
 ```text
 src/
 	components/                  Shared dashboard and task rows
+	benchmarking/                Invisible component render capture
+	benchmarks/                  Repeatable React Profiler benchmark runner
 	implementations/context/      Context provider and consumer hook
 	implementations/zustand/      Store and selector-based adapter
 	implementations/tanstack-query/ Query provider and query/mutation adapter
@@ -48,13 +50,16 @@ src/
 	utils/                        Task selectors, statistics, and mock API
 ```
 
-## Profiling Steps
+## Benchmarking
 
-1. Run `npm run dev` and install/enable the React Developer Tools browser extension.
-2. Open the **Profiler** tab, start recording, and reload the page to capture the initial Context render. For Query, separate the initial pending state from the first loaded state.
-3. Stop recording. Record commit count, components rendered per commit, `actualDuration`, and `baseDuration` from the commit details.
-4. Reload before each implementation and repeat the exact same seven actions in the same order: initial load, add a task, toggle completion, edit a task, delete a task, change filter, and search a title. Keep the seed data and browser viewport unchanged.
-5. Repeat the full sequence at least five times per implementation and report the median for each metric. Keep render/commit measurements separate from end-to-end operation time and mock API latency.
-The application is wrapped in React `StrictMode`. Development Strict Mode may invoke rendering more than once to surface unsafe behavior; note that in the report and use the same mode for all three approaches. React DevTools Profiler data is the source for commit and duration measurements.
+Run the automated React Profiler harness:
+
+```bash
+npm run benchmark
+```
+
+It replays the initial view and six interactions five times per implementation from the same seed state. It prints a JSON summary containing medians and individual samples. The harness uses React's `<Profiler>` API under `StrictMode`; tracked application-component render invocations are counted separately from commits. The harness runs in Vitest/JSDOM, not a real browser, so its click-to-feedback latency is not representative of browser input latency or layout/paint performance. The TanStack Query mock API adds a 220 ms delay per API call; mutation measurements may also include cache invalidation and refetch.
+
+For browser-specific confirmation, use the React Developer Tools Profiler with the same interaction sequence and report its results separately from the JSDOM measurements. See [REPORT.md](REPORT.md) for the captured run and caveats.
 
 See [REPORT.md](REPORT.md) for the benchmark worksheet and architectural comparison.
