@@ -111,7 +111,7 @@ describe('TaskDashboard', () => {
   it('preserves the selected theme when switching state implementations', () => {
     render(<App />)
 
-    fireEvent.click(screen.getByRole('button', { name: 'Switch to dark mode' }))
+    expect(screen.getByRole('main')).toHaveAttribute('data-theme', 'dark')
     fireEvent.click(screen.getByRole('tab', { name: 'Zustand' }))
 
     expect(screen.getByRole('main')).toHaveAttribute('data-theme', 'dark')

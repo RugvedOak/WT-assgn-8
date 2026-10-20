@@ -37,7 +37,7 @@ button:focus-visible, input:focus-visible, a:focus-visible {
 .page-shell { min-height: 100vh; }
 .topbar {
   height: 66px;
-  padding: 0 max(24px, calc((100vw - 1000px) / 2));
+  padding: 0 max(24px, calc((100vw - 820px) / 2));
   display: flex;
   align-items: center;
   border-bottom: 1px solid var(--line);
@@ -280,7 +280,7 @@ h1 { font: 700 35px/1.25 'Manrope', 'DM Sans', sans-serif; letter-spacing: 0; }
 
 @media (max-width: 700px) {
   .dashboard { width: min(100% - 32px, 560px); padding-top: 37px; }
-  .topbar { height: 60px; padding: 0 16px; }
+  .topbar { height: 60px; padding: 0 max(16px, calc((100vw - 560px) / 2)); }
   .welcome-row { align-items: flex-start; }
   h1 { font-size: 31px; }
   .date-stamp { max-width: 155px; gap: 6px; padding-top: 4px; font-size: 10px; }

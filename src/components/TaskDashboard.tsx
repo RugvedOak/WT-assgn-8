@@ -139,7 +139,6 @@ export function TaskDashboard({
             <h1>Your Tasks</h1>
             <p className="welcome-copy">A little progress, every day.</p>
           </div>
-          <div className="date-stamp"><CalendarDays size={16} /><span>{today}</span></div>
         </div>
 
         <div className="implementation-switch" role="tablist" aria-label="State management implementation">

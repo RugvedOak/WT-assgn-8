@@ -26,7 +26,7 @@ export default function App() {
 
 function TaskFlow() {
   const [implementation, setImplementation] = useState<Implementation>('context')
-  const [theme, setTheme] = useState<Theme>('light')
+  const [theme, setTheme] = useState<Theme>('dark')
   const changeImplementation = (next: Implementation) => setImplementation(next)
   const toggleTheme = () => setTheme((current) => current === 'light' ? 'dark' : 'light')
   const dashboardProps: DashboardProps = { theme, onToggleTheme: toggleTheme, onImplementationChange: changeImplementation }
