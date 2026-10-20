@@ -6,6 +6,13 @@ import { useQueryTasks } from './implementations/tanstack-query/useQueryTasks'
 import { useZustandTasks } from './implementations/zustand/useZustandTasks'
 
 type Implementation = 'context' | 'zustand' | 'query'
+type Theme = 'light' | 'dark'
+
+type DashboardProps = {
+  theme: Theme
+  onToggleTheme: () => void
+  onImplementationChange: (next: Implementation) => void
+}
 
 export default function App() {
   return (
@@ -19,28 +26,31 @@ export default function App() {
 
 function TaskFlow() {
   const [implementation, setImplementation] = useState<Implementation>('context')
+  const [theme, setTheme] = useState<Theme>('light')
   const changeImplementation = (next: Implementation) => setImplementation(next)
+  const toggleTheme = () => setTheme((current) => current === 'light' ? 'dark' : 'light')
+  const dashboardProps: DashboardProps = { theme, onToggleTheme: toggleTheme, onImplementationChange: changeImplementation }
 
   if (implementation === 'context') {
-    return <ContextImplementation onImplementationChange={changeImplementation} />
+    return <ContextImplementation {...dashboardProps} />
   }
   if (implementation === 'zustand') {
-    return <ZustandImplementation onImplementationChange={changeImplementation} />
+    return <ZustandImplementation {...dashboardProps} />
   }
-  return <QueryImplementation onImplementationChange={changeImplementation} />
+  return <QueryImplementation {...dashboardProps} />
 }
 
-function ContextImplementation({ onImplementationChange }: { onImplementationChange: (next: Implementation) => void }) {
+function ContextImplementation(props: DashboardProps) {
   const actions = useTaskContext()
-  return <TaskDashboard {...actions} implementation="context" onImplementationChange={onImplementationChange} />
+  return <TaskDashboard {...actions} {...props} implementation="context" />
 }
 
-function ZustandImplementation({ onImplementationChange }: { onImplementationChange: (next: Implementation) => void }) {
+function ZustandImplementation(props: DashboardProps) {
   const actions = useZustandTasks()
-  return <TaskDashboard {...actions} implementation="zustand" onImplementationChange={onImplementationChange} />
+  return <TaskDashboard {...actions} {...props} implementation="zustand" />
 }
 
-function QueryImplementation({ onImplementationChange }: { onImplementationChange: (next: Implementation) => void }) {
+function QueryImplementation(props: DashboardProps) {
   const actions = useQueryTasks()
-  return <TaskDashboard {...actions} implementation="query" onImplementationChange={onImplementationChange} />
+  return <TaskDashboard {...actions} {...props} implementation="query" />
 }

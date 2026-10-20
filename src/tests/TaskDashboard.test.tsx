@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { fireEvent, render, screen, within } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
+import App from '../App'
 import { TaskDashboard } from '../components/TaskDashboard'
 import type { TaskActions, TaskInput, TaskUpdate } from '../types/task'
 import { seedTasks, updateTaskInList } from '../utils/tasks'
@@ -9,6 +10,7 @@ function DashboardHarness({ onImplementationChange = () => undefined }: {
   onImplementationChange?: (implementation: 'context' | 'zustand' | 'query') => void
 }) {
   const [tasks, setTasks] = useState(() => seedTasks.map((task) => ({ ...task })))
+  const [theme, setTheme] = useState<'light' | 'dark'>('light')
   const actions: TaskActions = {
     tasks,
     isLoading: false,
@@ -25,7 +27,7 @@ function DashboardHarness({ onImplementationChange = () => undefined }: {
     deleteTask: async (id: string) => setTasks((current) => current.filter((task) => task.id !== id)),
     retry: () => undefined,
   }
-  return <TaskDashboard {...actions} implementation="context" onImplementationChange={onImplementationChange} />
+  return <TaskDashboard {...actions} implementation="context" theme={theme} onToggleTheme={() => setTheme((current) => current === 'light' ? 'dark' : 'light')} onImplementationChange={onImplementationChange} />
 }
 
 describe('TaskDashboard', () => {
@@ -76,8 +78,9 @@ describe('TaskDashboard', () => {
 
   it('shows completed-task statistics and a friendly empty state', () => {
     render(<DashboardHarness />)
-    const completedLabel = screen.getByText('Completed', { selector: '.stat-label' })
-    expect(within(completedLabel.parentElement!).getByText('2')).toBeInTheDocument()
+    const completedCard = screen.getByText('Completed', { selector: '.stat-label' }).closest('.stat-card') as HTMLElement
+    expect(within(completedCard).getByText('2', { selector: '.stat-value' })).toBeInTheDocument()
+    expect(screen.queryByLabelText(/render count/i)).not.toBeInTheDocument()
     fireEvent.change(screen.getByLabelText('Search tasks by title'), { target: { value: 'no such task' } })
     expect(screen.getByText('No matching tasks')).toBeInTheDocument()
     expect(screen.getByText('4', { selector: '.stat-value' })).toBeInTheDocument()
@@ -102,6 +105,16 @@ describe('TaskDashboard', () => {
     fireEvent.click(themeButton)
 
     expect(page).toHaveAttribute('data-theme', 'dark')
+    expect(screen.getByRole('button', { name: 'Switch to light mode' })).toHaveAttribute('aria-pressed', 'true')
+  })
+
+  it('preserves the selected theme when switching state implementations', () => {
+    render(<App />)
+
+    fireEvent.click(screen.getByRole('button', { name: 'Switch to dark mode' }))
+    fireEvent.click(screen.getByRole('tab', { name: 'Zustand' }))
+
+    expect(screen.getByRole('main')).toHaveAttribute('data-theme', 'dark')
     expect(screen.getByRole('button', { name: 'Switch to light mode' })).toHaveAttribute('aria-pressed', 'true')
   })
 })

@@ -38,7 +38,7 @@ The Query implementation uses a predictable asynchronous in-memory mock API with
 
 ```text
 src/
-	components/                  Shared dashboard, task rows, render counters
+	components/                  Shared dashboard and task rows
 	implementations/context/      Context provider and consumer hook
 	implementations/zustand/      Store and selector-based adapter
 	implementations/tanstack-query/ Query provider and query/mutation adapter
@@ -55,8 +55,6 @@ src/
 3. Stop recording. Record commit count, components rendered per commit, `actualDuration`, and `baseDuration` from the commit details.
 4. Reload before each implementation and repeat the exact same seven actions in the same order: initial load, add a task, toggle completion, edit a task, delete a task, change filter, and search a title. Keep the seed data and browser viewport unchanged.
 5. Repeat the full sequence at least five times per implementation and report the median for each metric. Keep render/commit measurements separate from end-to-end operation time and mock API latency.
-6. Use the development render counters beside the dashboard, form, and task rows as a quick diagnostic only. They count component render invocations, not commits or elapsed time.
-
-The application is wrapped in React `StrictMode`. Development Strict Mode may invoke rendering more than once to surface unsafe behavior; note that in the report and use the same mode for all three approaches. React DevTools Profiler data is the source for commit and duration measurements. Do not compare the `R` counters as commit counts.
+The application is wrapped in React `StrictMode`. Development Strict Mode may invoke rendering more than once to surface unsafe behavior; note that in the report and use the same mode for all three approaches. React DevTools Profiler data is the source for commit and duration measurements.
 
 See [REPORT.md](REPORT.md) for the benchmark worksheet and architectural comparison.

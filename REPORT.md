@@ -28,7 +28,7 @@ No profiler measurements have been collected for this submission. The tables bel
 
 Reload before measuring each approach. Record the same sequence: initial view, add, toggle completion, edit, delete, change filter, and search. Capture initial pending and loaded states separately for TanStack Query. Keep browser, viewport, data, and action sequence fixed. Record profiler commit details separately from elapsed user-operation time and Query mock API latency.
 
-Strict Mode is enabled. Development Strict Mode may invoke render logic more than once; use the same mode for each comparison and note it when reporting results. The development `R` counters are supplemental render-invocation indicators, not committed-render counts. Use React DevTools Profiler for commits, rendered components, `actualDuration`, and `baseDuration`.
+Strict Mode is enabled. Development Strict Mode may invoke render logic more than once; use the same mode for each comparison and note it when reporting results. Use React DevTools Profiler for commits, rendered components, `actualDuration`, and `baseDuration`.
 
 ## Profiler Results
 
@@ -74,7 +74,7 @@ For each cell, enter the median across repetitions. Report components rendered a
 - **TanStack Query cache:** the task array is observed through one query key. Optimistic updates provide immediate UI feedback, and rollback restores the previous cache snapshot after a failed mutation. Cache invalidation/refetch and mock API work contribute asynchronous latency, which is not render duration. Query primarily manages server state; Context and Zustand are commonly used for client state.
 - **Local UI state:** search and filter changes are local to the shared dashboard and do not alter the Query cache. The shared UI means the same dashboard-level work is present in all three versions; use actual captures before attributing a measured difference to a state library.
 
-Populate this section with observations from the captures, including any unexpected commits or components that rendered without visible output changing. Do not infer unnecessary renders from the render-invocation badge alone.
+Populate this section with observations from the captures, including any unexpected commits or components that rendered without visible output changing. Use the Profiler data rather than visual indicators to assess render behavior.
 
 ## Trade-offs
 

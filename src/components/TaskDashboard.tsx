@@ -16,10 +16,11 @@ import {
 } from 'lucide-react'
 import type { Task, TaskActions, TaskFilter, TaskInput } from '../types/task'
 import { filterTasks, getTaskStats } from '../utils/tasks'
-import { RenderCounter } from './RenderCounter'
 
 type Props = TaskActions & {
   implementation: string
+  theme: 'light' | 'dark'
+  onToggleTheme: () => void
   onImplementationChange: (implementation: 'context' | 'zustand' | 'query') => void
 }
 
@@ -37,6 +38,8 @@ const implementations: { label: string; value: 'context' | 'zustand' | 'query' }
 
 export function TaskDashboard({
   implementation,
+  theme,
+  onToggleTheme,
   onImplementationChange,
   tasks,
   isLoading,
@@ -54,7 +57,6 @@ export function TaskDashboard({
   const [feedback, setFeedback] = useState('')
   const [search, setSearch] = useState('')
   const [filter, setFilter] = useState<TaskFilter>('all')
-  const [theme, setTheme] = useState<'light' | 'dark'>('light')
   const stats = useMemo(() => getTaskStats(tasks), [tasks])
   const visibleTasks = useMemo(() => filterTasks(tasks, filter, search), [tasks, filter, search])
   const today = new Intl.DateTimeFormat('en', {
@@ -125,7 +127,7 @@ export function TaskDashboard({
           aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
           title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
           aria-pressed={theme === 'dark'}
-          onClick={() => setTheme((current) => current === 'light' ? 'dark' : 'light')}
+          onClick={onToggleTheme}
         >
           {theme === 'light' ? <Moon size={17} /> : <Sun size={17} />}
         </button>
@@ -158,16 +160,15 @@ export function TaskDashboard({
         </div>
 
         <div className="stats-grid" aria-label="Task statistics">
-          <StatCard label="Total tasks" value={stats.total} icon={<ListTodo size={18} />} tone="indigo" />
-          <StatCard label="Completed" value={stats.completed} icon={<CircleCheck size={18} />} tone="green" />
-          <StatCard label="Pending" value={stats.pending} icon={<Clock3 size={18} />} tone="amber" />
+          <StatCard label="Total tasks" value={stats.total} icon={<ListTodo size={18} />} tone="total" />
+          <StatCard label="Completed" value={stats.completed} icon={<CircleCheck size={18} />} tone="completed" />
+          <StatCard label="Pending" value={stats.pending} icon={<Clock3 size={18} />} tone="pending" />
         </div>
 
         <section className="composer panel" aria-labelledby="add-heading">
           <div className="composer-heading">
             <div className="composer-icon"><Plus size={18} /></div>
             <div><h2 id="add-heading">Add a task</h2><p>Make space for what matters next.</p></div>
-            <RenderCounter label="Task form" />
           </div>
           <form className="task-form" onSubmit={submitTask} noValidate>
             <div className="form-fields">
@@ -198,7 +199,6 @@ export function TaskDashboard({
         <section className="tasks-section" aria-labelledby="tasks-heading">
           <div className="section-heading">
             <div><h2 id="tasks-heading">Your list</h2><span className="list-count">{stats.total} {stats.total === 1 ? 'task' : 'tasks'}</span></div>
-            <RenderCounter label="Task dashboard" />
           </div>
           <div className="task-toolbar">
             <label className="search-field">
@@ -256,7 +256,18 @@ export function TaskDashboard({
 }
 
 function StatCard({ label, value, icon, tone }: { label: string; value: number; icon: React.ReactNode; tone: string }) {
-  return <article className="stat-card"><span className={`stat-icon ${tone}`}>{icon}</span><div><span className="stat-label">{label}</span><strong className="stat-value">{value}</strong></div></article>
+  return (
+    <article className={`stat-card stat-${tone}`}>
+      <div className="stat-card-top">
+        <span className="stat-label">{label}</span>
+        <span className="stat-icon" aria-hidden="true">{icon}</span>
+      </div>
+      <div className="stat-card-reading">
+        <strong className="stat-value">{value}</strong>
+        <span className="stat-unit">tasks</span>
+      </div>
+    </article>
+  )
 }
 
 function TaskRow({ task, onToggle, onDelete, onSave }: {
@@ -303,7 +314,6 @@ function TaskRow({ task, onToggle, onDelete, onSave }: {
           </button>
           <div className="task-content"><h3>{task.title}</h3>{task.description && <p>{task.description}</p>}</div>
           <div className="row-actions">
-            <RenderCounter label={`Task row ${task.title}`} />
             <button className="icon-button" type="button" aria-label={`Edit ${task.title}`} onClick={() => setEditing(true)}><Pencil size={16} /></button>
             <button className="icon-button delete-action" type="button" aria-label={`Delete ${task.title}`} onClick={onDelete}><Trash2 size={16} /></button>
           </div>

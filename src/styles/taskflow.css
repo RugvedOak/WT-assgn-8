@@ -112,29 +112,28 @@ h1 { font: 700 35px/1.25 'Manrope', 'DM Sans', sans-serif; letter-spacing: 0; }
 
 .stats-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-bottom: 17px; }
 .stat-card {
-  min-height: 80px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
+  min-height: 106px;
   padding: 14px 16px;
   border: 1px solid var(--line);
-  border-radius: 5px;
+  border-radius: 14px;
   background: var(--surface);
 }
+.stat-card-top, .stat-card-reading { display: flex; align-items: center; justify-content: space-between; }
+.stat-card-reading { justify-content: flex-start; align-items: baseline; gap: 7px; margin-top: 9px; }
 .stat-icon {
-  width: 31px;
-  height: 31px;
+  width: 24px;
+  height: 24px;
   flex: 0 0 auto;
   display: grid;
   place-items: center;
-  border-radius: 4px;
-  background: #f4eee9;
-  color: #9b7465;
+  color: var(--kpi-icon-color, #765443);
 }
-.stat-icon.indigo, .stat-icon.green, .stat-icon.amber { background: #f4eee9; color: #9b7465; }
-.stat-card > div { display: grid; gap: 4px; }
-.stat-label { color: var(--muted); font-size: 11px; }
-.stat-value { color: var(--ink); font: 600 21px/1 'Manrope', sans-serif; }
+.stat-total { --kpi-icon-color: #974d35; }
+.stat-completed { --kpi-icon-color: #52684f; }
+.stat-pending { --kpi-icon-color: #796238; }
+.stat-label { color: var(--muted); font-size: 12px; font-weight: 500; }
+.stat-value { color: var(--ink); font: 600 29px/1 'Manrope', sans-serif; }
+.stat-unit { color: var(--subtle); font-size: 11px; }
 
 .panel { border: 1px solid var(--line); border-radius: 5px; background: var(--surface); }
 .composer { padding: 18px; }
@@ -142,7 +141,6 @@ h1 { font: 700 35px/1.25 'Manrope', 'DM Sans', sans-serif; letter-spacing: 0; }
 .composer-icon { width: 30px; height: 30px; display: grid; place-items: center; border: 1px solid #ead8cf; border-radius: 4px; color: var(--primary); }
 .composer-heading h2, .section-heading h2 { font: 600 14px 'Manrope', sans-serif; }
 .composer-heading p { margin-top: 3px; color: var(--muted); font-size: 11px; line-height: 1.5; }
-.render-counter { margin-left: auto; padding: 3px 5px; border: 1px solid var(--line); border-radius: 3px; color: #85837c; background: #faf9f6; font: 500 9px/1.2 ui-monospace, monospace; }
 .task-form { display: flex; align-items: flex-start; gap: 9px; }
 .form-fields { min-width: 0; flex: 1; display: flex; gap: 8px; }
 .text-input {
@@ -287,11 +285,11 @@ h1 { font: 700 35px/1.25 'Manrope', 'DM Sans', sans-serif; letter-spacing: 0; }
   h1 { font-size: 31px; }
   .date-stamp { max-width: 155px; gap: 6px; padding-top: 4px; font-size: 10px; }
   .stats-grid { gap: 8px; }
-  .stat-card { min-height: 73px; gap: 8px; padding: 11px 10px; }
+  .stat-card { min-height: 96px; padding: 11px 10px; }
   .stat-icon { width: 28px; height: 28px; }
   .stat-icon svg { width: 15px; }
   .stat-label { font-size: 10px; }
-  .stat-value { font-size: 19px; }
+  .stat-value { font-size: 25px; }
   .composer { padding: 15px; }
   .task-form, .form-fields { flex-direction: column; }
   .form-fields { width: 100%; }
@@ -314,9 +312,13 @@ h1 { font: 700 35px/1.25 'Manrope', 'DM Sans', sans-serif; letter-spacing: 0; }
   .implementation-switch { width: 100%; gap: 0; }
   .implementation-tab { flex: 1; gap: 5px; padding: 0 6px; font-size: 10px; }
   .stats-grid { gap: 6px; }
-  .stat-card { align-items: flex-start; flex-direction: column; gap: 6px; padding: 9px; }
-  .stat-card > div { gap: 2px; }
-  .stat-value { font-size: 18px; }
+  .stat-card { min-height: 88px; padding: 9px; }
+  .stat-card-top { gap: 4px; }
+  .stat-label { font-size: 9px; }
+  .stat-icon { width: 25px; height: 25px; }
+  .stat-icon svg { width: 14px; }
+  .stat-card-reading { margin-top: 7px; }
+  .stat-value { font-size: 23px; }
   .task-row { gap: 9px; padding: 11px 9px; }
   .task-content h3 { font-size: 11px; }
   .task-content p { max-width: 190px; font-size: 10px; }
@@ -377,12 +379,10 @@ h1 { font: 700 35px/1.25 'Manrope', 'DM Sans', sans-serif; letter-spacing: 0; }
 .page-shell[data-theme='dark'] .tab-zustand,
 .page-shell[data-theme='dark'] .tab-query { background: #69645d; }
 .page-shell[data-theme='dark'] .implementation-tab.is-current .tab-indicator { background: var(--primary); }
-.page-shell[data-theme='dark'] .stat-icon,
-.page-shell[data-theme='dark'] .stat-icon.indigo,
-.page-shell[data-theme='dark'] .stat-icon.green,
-.page-shell[data-theme='dark'] .stat-icon.amber { background: #43362f; color: #e0a28a; }
+.page-shell[data-theme='dark'] .stat-total .stat-icon { color: #e5a58f; }
+.page-shell[data-theme='dark'] .stat-completed .stat-icon { color: #b7cba9; }
+.page-shell[data-theme='dark'] .stat-pending .stat-icon { color: #dec58b; }
 .page-shell[data-theme='dark'] .composer-icon { border-color: #765344; }
-.page-shell[data-theme='dark'] .render-counter { background: var(--page); color: var(--muted); }
 .page-shell[data-theme='dark'] .text-input { border-color: #4a4741; background: var(--surface); color: var(--ink); }
 .page-shell[data-theme='dark'] .text-input::placeholder,
 .page-shell[data-theme='dark'] .search-field input::placeholder { color: #a29e95; }
@@ -421,7 +421,6 @@ h1 { font: 700 35px/1.25 'Manrope', 'DM Sans', sans-serif; letter-spacing: 0; }
 .stat-icon,
 .panel,
 .composer-icon,
-.render-counter,
 .text-input,
 .button-primary,
 .search-field,
@@ -442,12 +441,12 @@ h1 { font: 700 35px/1.25 'Manrope', 'DM Sans', sans-serif; letter-spacing: 0; }
 .brand-mark { border-radius: 10px; }
 .stat-card, .panel, .task-list, .empty-state, .error-state, .loading-state { border-radius: 14px; }
 .stat-icon, .composer-icon, .theme-toggle, .search-field, .text-input, .button-primary, .button-secondary { border-radius: 10px; }
-.render-counter, .filter-group { border-radius: 9px; }
+.filter-group { border-radius: 9px; }
 .filter-button, .search-clear, .task-check, .icon-button, .loading-state span { border-radius: 8px; }
 
 @supports not (corner-shape: squircle) {
   .brand-mark, .theme-toggle, .stat-card, .stat-icon, .panel, .composer-icon,
-  .render-counter, .text-input, .button-primary, .search-field, .search-clear,
+  .text-input, .button-primary, .search-field, .search-clear,
   .filter-group, .filter-button, .task-list, .task-check, .icon-button,
   .empty-state, .error-state, .button-secondary, .loading-state, .loading-state span {
     border-radius: 12px;
