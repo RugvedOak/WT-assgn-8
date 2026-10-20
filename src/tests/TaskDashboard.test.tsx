@@ -93,4 +93,15 @@ describe('TaskDashboard', () => {
     expect(onImplementationChange).toHaveBeenCalledWith('zustand')
     expect(screen.getByRole('tab', { name: 'Zustand' })).toHaveFocus()
   })
+
+  it('switches between light and dark presentation modes accessibly', () => {
+    render(<DashboardHarness />)
+    const page = screen.getByRole('main')
+    const themeButton = screen.getByRole('button', { name: 'Switch to dark mode' })
+
+    fireEvent.click(themeButton)
+
+    expect(page).toHaveAttribute('data-theme', 'dark')
+    expect(screen.getByRole('button', { name: 'Switch to light mode' })).toHaveAttribute('aria-pressed', 'true')
+  })
 })

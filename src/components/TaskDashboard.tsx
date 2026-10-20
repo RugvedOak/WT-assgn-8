@@ -2,15 +2,15 @@ import { useMemo, useState, type FormEvent, type KeyboardEvent } from 'react'
 import {
   CalendarDays,
   Check,
-  CheckCheck,
   Circle,
   CircleCheck,
   Clock3,
   ListTodo,
+  Moon,
   Pencil,
   Plus,
   Search,
-  Sparkles,
+  Sun,
   Trash2,
   X,
 } from 'lucide-react'
@@ -54,6 +54,7 @@ export function TaskDashboard({
   const [feedback, setFeedback] = useState('')
   const [search, setSearch] = useState('')
   const [filter, setFilter] = useState<TaskFilter>('all')
+  const [theme, setTheme] = useState<'light' | 'dark'>('light')
   const stats = useMemo(() => getTaskStats(tasks), [tasks])
   const visibleTasks = useMemo(() => filterTasks(tasks, filter, search), [tasks, filter, search])
   const today = new Intl.DateTimeFormat('en', {
@@ -112,21 +113,28 @@ export function TaskDashboard({
   }
 
   return (
-    <main className="page-shell">
+    <main className="page-shell" data-theme={theme}>
       <header className="topbar">
         <a className="brand" href="#top" aria-label="TaskFlow home">
-          <span className="brand-mark"><CheckCheck size={20} strokeWidth={2.5} /></span>
-          <span>taskflow</span>
+          <span className="brand-mark"><ListTodo size={18} strokeWidth={2} /></span>
+          <span>TaskFlow</span>
         </a>
-        <div className="topbar-caption"><span className="status-dot" /> A quieter way to get things done</div>
-        <div className="avatar" aria-label="Your workspace">JD</div>
+        <button
+          className="theme-toggle"
+          type="button"
+          aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
+          title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
+          aria-pressed={theme === 'dark'}
+          onClick={() => setTheme((current) => current === 'light' ? 'dark' : 'light')}
+        >
+          {theme === 'light' ? <Moon size={17} /> : <Sun size={17} />}
+        </button>
       </header>
 
       <section className="dashboard" id="top">
         <div className="welcome-row">
           <div>
-            <div className="eyebrow"><Sparkles size={14} /> YOUR WORKSPACE</div>
-            <h1>Your Tasks<span className="heading-period">.</span></h1>
+            <h1>Your Tasks</h1>
             <p className="welcome-copy">A little progress, every day.</p>
           </div>
           <div className="date-stamp"><CalendarDays size={16} /><span>{today}</span></div>
